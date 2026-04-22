@@ -12,13 +12,13 @@ genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
 # Usamos un bloque try-except para capturar el error de 'NotFound'
 try:
     # Intentamos con el modelo más estable y rápido
-    model = genai.GenerativeModel('models/gemini-1.5-flash')
+    model = genai.GenerativeModel('models/gemini-2.0-flash')
     # Prueba rápida para verificar que el modelo responde
     model.generate_content("Hola", generation_config={"max_output_tokens": 1})
 except Exception as e:
-    st.warning(f"El modelo 'gemini-1.5-flash' dio error. Intentando con 'gemini-1.5-pro'...")
+    st.warning(f"El modelo 'gemini-2.0-flash' dio error. Intentando con 'gemini-2.0-flashlite'...")
     try:
-        model = genai.GenerativeModel('models/gemini-1.5-pro')
+        model = genai.GenerativeModel('models/gemini-2.0-flash-lite')
     except:
         st.error(f"No se pudo encontrar un modelo válido. Error técnico: {e}")
         st.stop()
