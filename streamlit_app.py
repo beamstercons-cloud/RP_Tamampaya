@@ -2,12 +2,26 @@ import streamlit as st
 import pandas as pd
 import google.generativeai as genai
 
-# --- CONFIGURACIÓN DE GEMINI ---
+# Configuración segura
+if "GEMINI_API_KEY" not in st.secrets:
+    st.error("Falta la API Key en los Secrets de Streamlit.")
+    st.stop()
+
+genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
+
+# Usamos un bloque try-except para capturar el error de 'NotFound'
 try:
-    genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
-    model = genai.GenerativeModel('gemini-1.5-flash') # Versión rápida e inteligente
-except:
-    st.error("Error: No se encontró la API Key de Gemini en los Secrets.")
+    # Intentamos con el modelo más estable y rápido
+    model = genai.GenerativeModel('gemini-1.5-flash')
+    # Prueba rápida para verificar que el modelo responde
+    model.generate_content("Hola", generation_config={"max_output_tokens": 1})
+except Exception as e:
+    st.warning(f"El modelo 'gemini-1.5-flash' dio error. Intentando con 'gemini-1.5-pro'...")
+    try:
+        model = genai.GenerativeModel('gemini-1.5-pro')
+    except:
+        st.error(f"No se pudo encontrar un modelo válido. Error técnico: {e}")
+        st.stop()
 
 # --- LISTA DE PROBLEMAS (Resumida para el ejemplo) ---
 PROBLEMAS_INICIALES = {
